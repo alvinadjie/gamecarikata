@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Cari Kata</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#3a1c71">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+html,body{margin:0;height:100%;background:linear-gradient(160deg,#3a1c71,#d76d77,#ffaf7b);color:#fff;font-family:sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
+#app{display:flex;flex-direction:column;align-items:center;height:100%;padding:10px;box-sizing:border-box}
+#hud{width:100%;max-width:480px;display:flex;justify-content:space-between;font-size:18px;margin-bottom:8px;font-weight:bold;text-shadow:0 1px 3px #0006}
+#board{display:grid;gap:4px;width:min(94vw,52vh,480px);aspect-ratio:1;touch-action:none}
+.c{display:flex;align-items:center;justify-content:center;background:#ffffffcc;color:#3a1c71;border-radius:10px;font-weight:bold;font-size:clamp(16px,5.2vw,26px);transition:background .15s,transform .15s;box-shadow:0 2px 0 #0002}
+.c.sel{background:#ffd93d;color:#3a1c71;transform:scale(1.08)}
+.c.found{color:#fff;animation:pop .5s both}
+.c.shake{animation:shake .3s}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.5) rotate(8deg)}100%{transform:scale(1)}}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+#list{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px;max-width:480px}
+.w{padding:7px 14px;border-radius:18px;background:#ffffff33;border:2px solid #ffffff88;font-size:15px;font-weight:bold;transition:.3s}
+.w.done{text-decoration:line-through;opacity:.6;transform:scale(.92);background:#6bcB3d55;border-color:#6bcB3d}
+.w.bump{animation:pop .5s}
+#fx{position:fixed;inset:0;pointer-events:none}
+.ov{position:fixed;inset:0;background:linear-gradient(160deg,#3a1c71dd,#d76d77dd);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:20px;box-sizing:border-box}
+button{font-size:22px;padding:12px 36px;border:0;border-radius:24px;background:#ffd93d;color:#3a1c71;font-weight:bold;box-shadow:0 4px 0 #c9a415}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="hud"><span id="lv"></span><span>Skor: <b id="sc">0</b></span></div>
+  <div id="board"></div>
+  <div id="list"></div>
+</div>
+<canvas id="fx"></canvas>
+<div class="ov" id="ov"><h1 id="t">Cari Kata</h1><div id="i">Geser jarimu di atas huruf untuk menemukan kata.<br>Bisa mendatar, menurun, atau miring.</div><button id="go">Mulai</button></div>
+<script>
+const THEMES=[
+ {n:'Hewan',w:['KUCING','KAMBING','HARIMAU','GAJAH','ZEBRA','BEBEK','ANGSA','KERBAU','BURUNG','KELINCI','SAPI','ULAR']},
+ {n:'Buah',w:['MANGGA','JERUK','APEL','PISANG','SEMANGKA','DURIAN','NANAS','ANGGUR','PEPAYA','JAMBU','SALAK','MELON']},
+ {n:'Rumah',w:['DAPUR','KAMAR','MEJA','KURSI','LEMARI','JENDELA','PINTU','ATAP','LANTAI','TEMBOK','TAMAN','GARASI']},
+ {n:'Alam',w:['GUNUNG','SUNGAI','HUTAN','PANTAI','LAUT','BUKIT','AWAN','HUJAN','ANGIN','BINTANG','BULAN','BUMI']}
+];
+const DIRS=[[0,1],[1,0]]; // hanya kiri->kanan dan atas->bawah, biar mudah dibaca anak
+const $=id=>document.getElementById(id);
+let L=0,N=8,grid,words,found,score=0,cells,start=null,path=[];
+
+/* ---------- sound ---------- */
+let ac;
+function tone(f,d=.12,type='sine',at=0,v=.15){
+  try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+  const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+at;
+  o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);
+  o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+d);}catch(e){}
+}
+const buzz=p=>navigator.vibrate&&navigator.vibrate(p);
+const sfxFound=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.18,'triangle',i*.09));
+const sfxFail=()=>{tone(150,.25,'sawtooth',0,.1);buzz(80)};
+const sfxWin=()=>[523,659,784,659,784,1047,1319].forEach((f,i)=>tone(f,.25,'square',i*.11,.08));
+
+/* ---------- generate ---------- */
+function build(){
+  const th=THEMES[L%THEMES.length];
+  N=Math.min(6+Math.floor(L/THEMES.length),8);
+  words=[...th.w].filter(w=>w.length<=N).sort(()=>Math.random()-.5).slice(0,4);
+  grid=Array.from({length:N},()=>Array(N).fill(''));
+  words.slice().sort((a,b)=>b.length-a.length).forEach(w=>{
+    for(let k=0;k<300;k++){
+      const [dr,dc]=DIRS[Math.random()*DIRS.length|0],r=Math.random()*N|0,c=Math.random()*N|0;
+      const er=r+dr*(w.length-1),ec=c+dc*(w.length-1);
+      if(er<0||er>=N||ec<0||ec>=N)continue;
+      let ok=true;
+      for(let i=0;i<w.length;i++){const x=grid[r+dr*i][c+dc*i];if(x&&x!==w[i]){ok=false;break}}
+      if(!ok)continue;
+      for(let i=0;i<w.length;i++)grid[r+dr*i][c+dc*i]=w[i];
+      break;
+    }
+  });
+  const A='ABCDEFGHIJKLMNOPRSTUW';
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++)if(!grid[r][c])grid[r][c]=A[Math.random()*A.length|0];
+  found=new Set();
+  $('lv').textContent='Level '+(L+1)+' · '+th.n;
+  const b=$('board');b.innerHTML='';b.style.gridTemplateColumns=`repeat(${N},1fr)`;
+  cells=[];
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++){
+    const d=document.createElement('div');d.className='c';d.textContent=grid[r][c];d.dataset.r=r;d.dataset.c=c;
+    b.appendChild(d);cells.push(d);
+  }
+  $('list').innerHTML=words.map(w=>`<span class="w" id="w-${w}">${w}</span>`).join('');
+}
+
+/* ---------- input ---------- */
+const cellAt=(x,y)=>{const e=document.elementFromPoint(x,y);return e&&e.dataset&&e.dataset.r!==undefined?e:null};
+function calcPath(a,b){
+  const dr=b.r-a.r,dc=b.c-a.c;
+  if(!(dr===0||dc===0))return null; // hanya lurus mendatar atau menurun
+  const n=Math.max(Math.abs(dr),Math.abs(dc)),sr=Math.sign(dr),sc=Math.sign(dc),p=[];
+  for(let i=0;i<=n;i++)p.push([a.r+sr*i,a.c+sc*i]);
+  return p;
+}
+function paint(){
+  cells.forEach(c=>c.classList.remove('sel'));
+  path.forEach(([r,c])=>cells[r*N+c].classList.add('sel'));
+}
+const board=$('board');
+board.addEventListener('pointerdown',e=>{
+  const el=cellAt(e.clientX,e.clientY);if(!el)return;
+  board.setPointerCapture(e.pointerId);
+  start={r:+el.dataset.r,c:+el.dataset.c};path=[[start.r,start.c]];paint();tone(400,.06,'sine',0,.1);
+});
+board.addEventListener('pointermove',e=>{
+  if(!start)return;
+  const el=cellAt(e.clientX,e.clientY);if(!el)return;
+  const p=calcPath(start,{r:+el.dataset.r,c:+el.dataset.c});
+  if(p&&p.length!==path.length){path=p;paint();tone(400+p.length*60,.05,'sine',0,.08)}
+  else if(p)path=p;
+});
+board.addEventListener('pointerup',()=>{
+  if(!start)return;
+  const s=path.map(([r,c])=>grid[r][c]).join(''),rev=[...s].reverse().join('');
+  const w=words.find(x=>!found.has(x)&&(x===s||x===rev));
+  const cur=path.slice();start=null;path=[];paint();
+  if(w)hit(w,cur);
+  else if(cur.length>1){cur.forEach(([r,c])=>{const el=cells[r*N+c];el.classList.add('shake');setTimeout(()=>el.classList.remove('shake'),300)});sfxFail()}
+});
+
+/* ---------- result ---------- */
+function hit(w,p){
+  found.add(w);
+  const hue=found.size*57%360;
+  p.forEach(([r,c],i)=>{const el=cells[r*N+c];el.classList.remove('found');void el.offsetWidth;
+    el.style.background=`hsl(${hue},70%,45%)`;el.style.animationDelay=i*60+'ms';el.classList.add('found')});
+  const chip=$('w-'+w);chip.classList.add('done','bump');
+  score+=w.length*10;$('sc').textContent=score;
+  sfxFound();buzz([30,40,30]);
+  const rc=cells[p[p.length>>1][0]*N+p[p.length>>1][1]].getBoundingClientRect();
+  confetti(rc.left+rc.width/2,rc.top+rc.height/2,50);
+  if(found.size===words.length)setTimeout(win,900);
+}
+function win(){
+  score+=50;$('sc').textContent=score;sfxWin();buzz([100,50,100,50,200]);
+  confetti(innerWidth/2,innerHeight/3,200);
+  const best=Math.max(score,+localStorage.best||0);localStorage.best=best;
+  $('t').textContent='Level '+(L+1)+' Selesai! 🎉';
+  $('i').innerHTML='Skor: '+score+' · Terbaik: '+best;
+  $('go').textContent='Lanjut';$('ov').style.display='flex';
+}
+$('go').onclick=()=>{
+  if($('go').textContent==='Lanjut')L++;
+  $('ov').style.display='none';build();
+  try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}
+};
+
+/* ---------- confetti ---------- */
+const cv=$('fx'),cx=cv.getContext('2d');let ps=[],run=false;
+function size(){cv.width=innerWidth;cv.height=innerHeight}size();addEventListener('resize',size);
+function confetti(x,y,n){
+  for(let i=0;i<n;i++)ps.push({x,y,vx:(Math.random()-.5)*12,vy:-Math.random()*12-3,s:4+Math.random()*6,h:Math.random()*360,l:70});
+  if(!run){run=true;requestAnimationFrame(tick)}
+}
+function tick(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;p.l--;cx.fillStyle=`hsl(${p.h},90%,60%)`;cx.fillRect(p.x,p.y,p.s,p.s)});
+  ps=ps.filter(p=>p.l>0&&p.y<cv.height);
+  if(ps.length)requestAnimationFrame(tick);else{run=false;cx.clearRect(0,0,cv.width,cv.height)}
+}
+</script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');</script>
+</body>
+</html>
