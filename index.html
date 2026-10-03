@@ -10,79 +10,153 @@
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;background:linear-gradient(160deg,#3a1c71,#d76d77,#ffaf7b);color:#fff;font-family:'Segoe UI',system-ui,sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
-#app{display:flex;flex-direction:column;align-items:center;height:100%;padding:8px 10px;box-sizing:border-box}
 
-/* ===== MAIN MENU ===== */
+/* ===== MENU UTAMA ===== */
 #menuView{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 12px 28px}
 .menu-title{font-size:28px;font-weight:900;margin:0 0 4px;text-shadow:0 2px 8px #0005;text-align:center}
-.menu-sub{font-size:14px;opacity:.9;margin:0 0 20px;text-align:center}
-.cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:100%;max-width:480px}
+.menu-sub{font-size:14px;opacity:.9;margin:0 0 18px;text-align:center}
+.cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:100%;max-width:480px}
 @media(min-width:540px){.cat-grid{grid-template-columns:repeat(3,1fr)}}
-.cat-card{background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);border-radius:20px;padding:16px 10px;display:flex;flex-direction:column;align-items:center;cursor:pointer;box-shadow:0 5px 14px #0003;backdrop-filter:blur(8px);transition:transform .13s}
-.cat-card:active{transform:scale(.94)}
-.cat-icon{font-size:42px;margin-bottom:8px;filter:drop-shadow(0 3px 5px #0003)}
-.cat-name{font-size:15px;font-weight:800;text-align:center;text-shadow:0 1px 2px #0003}
+.cat-card{background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);border-radius:20px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;cursor:pointer;box-shadow:0 5px 14px #0003;backdrop-filter:blur(8px);transition:transform .13s,background .13s}
+.cat-card:active{transform:scale(.94);background:rgba(255,255,255,.35)}
+.cat-icon{font-size:40px;margin-bottom:7px;filter:drop-shadow(0 3px 5px #0003)}
+.cat-name{font-size:14px;font-weight:800;text-align:center;text-shadow:0 1px 2px #0003}
 .cat-count{font-size:12px;opacity:.85;margin-top:4px;background:rgba(255,255,255,.22);padding:3px 10px;border-radius:12px;font-weight:700}
 
+/* ===== LEVEL SELECT ===== */
+#levelView{width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px;gap:16px}
+.lv-header{text-align:center}
+.lv-header h2{margin:0 0 6px;font-size:22px;font-weight:900;text-shadow:0 2px 6px #0005}
+.lv-header p{margin:0;font-size:14px;opacity:.9}
+.lv-list{display:flex;flex-direction:column;gap:14px;width:100%;max-width:380px}
+.lv-card{display:flex;align-items:center;gap:16px;padding:16px 20px;border-radius:22px;cursor:pointer;border:2.5px solid rgba(255,255,255,.5);box-shadow:0 5px 16px #0003;backdrop-filter:blur(8px);transition:transform .13s,background .13s}
+.lv-card:active{transform:scale(.95)}
+.lv-card.easy{background:linear-gradient(135deg,rgba(76,175,80,.45),rgba(56,142,60,.55))}
+.lv-card.medium{background:linear-gradient(135deg,rgba(255,193,7,.4),rgba(245,124,0,.5))}
+.lv-card.hard{background:linear-gradient(135deg,rgba(244,67,54,.4),rgba(183,28,28,.55))}
+.lv-badge{font-size:36px;flex-shrink:0}
+.lv-info{flex:1}
+.lv-name{font-size:18px;font-weight:900;text-shadow:0 1px 3px #0004;margin-bottom:4px}
+.lv-desc{font-size:12px;opacity:.9;line-height:1.4}
+.lv-star{font-size:18px;letter-spacing:2px}
+.btn-back-lv{background:rgba(255,255,255,.25);border:1.5px solid rgba(255,255,255,.45);color:#fff;font-size:13px;font-weight:700;padding:8px 16px;border-radius:16px;cursor:pointer;align-self:flex-start;display:inline-flex;align-items:center;gap:5px;transition:transform .1s;outline:none}
+.btn-back-lv:active{transform:scale(.93)}
+
 /* ===== GAME VIEW ===== */
-#gameView{width:100%;height:100%;display:none;flex-direction:column;align-items:center;padding:6px 10px;box-sizing:border-box}
-#hud{width:100%;max-width:480px;display:flex;justify-content:space-between;align-items:center;font-size:16px;margin-bottom:6px;font-weight:bold;text-shadow:0 1px 3px #0006}
-.btn-back{background:rgba(255,255,255,.28);border:1.5px solid rgba(255,255,255,.5);color:#fff;font-size:13px;font-weight:700;padding:6px 12px;border-radius:16px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:transform .1s;outline:none}
-.btn-back:active{transform:scale(.93);background:rgba(255,255,255,.45)}
-#board{display:grid;gap:3px;width:min(94vw,52vh,480px);aspect-ratio:1;touch-action:none}
-.c{display:flex;align-items:center;justify-content:center;background:#ffffffcc;color:#3a1c71;border-radius:8px;font-weight:bold;font-size:clamp(14px,5vw,24px);transition:background .12s,transform .12s;box-shadow:0 2px 0 #0002}
-.c.sel{background:#ffd93d;color:#3a1c71;transform:scale(1.1)}
-.c.found{color:#fff;animation:pop .5s both}
+#gameView{width:100%;height:100%;display:none;flex-direction:column;align-items:center;padding:6px 10px 8px;box-sizing:border-box}
+#hud{width:100%;max-width:520px;display:flex;justify-content:space-between;align-items:center;font-size:15px;margin-bottom:5px;font-weight:bold;text-shadow:0 1px 3px #0006;gap:6px}
+.btn-sm{background:rgba(255,255,255,.28);border:1.5px solid rgba(255,255,255,.5);color:#fff;font-size:12px;font-weight:700;padding:5px 11px;border-radius:14px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;transition:transform .1s;outline:none}
+.btn-sm:active{transform:scale(.93);background:rgba(255,255,255,.45)}
+#hud-mid{display:flex;flex-direction:column;align-items:center;gap:2px;flex:1}
+#lv{font-size:13px;font-weight:800;opacity:.95}
+#diff-badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:800;white-space:nowrap}
+#diff-badge.easy{background:#4caf50cc}
+#diff-badge.medium{background:#ffc107cc;color:#3a1c71}
+#diff-badge.hard{background:#f44336cc}
+#board{display:grid;touch-action:none;margin:0 auto}
+.c{display:flex;align-items:center;justify-content:center;background:#ffffffcc;color:#3a1c71;border-radius:7px;font-weight:bold;transition:background .12s,transform .12s;box-shadow:0 2px 0 #0002;line-height:1}
+.c.sel{background:#ffd93d;color:#3a1c71;transform:scale(1.08)}
+.c.found{color:#fff;animation:pop .45s both}
 .c.shake{animation:shake .3s}
-@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.45) rotate(7deg)}100%{transform:scale(1)}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.5) rotate(7deg)}100%{transform:scale(1)}}
 @keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-#list{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:10px;max-width:480px}
-.w{padding:6px 13px;border-radius:16px;background:#ffffff33;border:2px solid #ffffff88;font-size:14px;font-weight:bold;transition:.3s}
-.w.done{text-decoration:line-through;opacity:.6;transform:scale(.9);background:#6bcB3d55;border-color:#6bcB3d}
-.w.bump{animation:pop .5s}
-#fx{position:fixed;inset:0;pointer-events:none}
-.ov{position:fixed;inset:0;background:linear-gradient(160deg,#3a1c71dd,#d76d77dd);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:20px;box-sizing:border-box;z-index:10}
-.ov-btn{font-size:20px;padding:12px 34px;border:0;border-radius:24px;background:#ffd93d;color:#3a1c71;font-weight:bold;box-shadow:0 4px 0 #c9a415;cursor:pointer;transition:transform .1s}
+#list{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:520px;margin-top:8px}
+.w{padding:5px 12px;border-radius:14px;background:#ffffff33;border:2px solid #ffffff88;font-size:13px;font-weight:bold;transition:.3s}
+.w.done{text-decoration:line-through;opacity:.55;transform:scale(.9);background:#6bcB3d55;border-color:#6bcB3d}
+.w.bump{animation:pop .45s}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:5}
+/* Win overlay */
+.ov{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;box-sizing:border-box;z-index:20;backdrop-filter:blur(6px)}
+.ov-inner{background:rgba(58,28,113,.88);border-radius:28px;padding:28px 24px;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:340px;width:100%;box-shadow:0 12px 40px #0006;border:2px solid rgba(255,255,255,.3)}
+.ov-btn{font-size:18px;padding:12px 32px;border:0;border-radius:22px;background:#ffd93d;color:#3a1c71;font-weight:bold;box-shadow:0 4px 0 #c9a415;cursor:pointer;transition:transform .1s;width:100%}
 .ov-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c9a415}
-#menuBtn2{font-size:16px;padding:10px 24px;border:0;border-radius:18px;background:rgba(255,255,255,.28);color:#fff;font-weight:bold;cursor:pointer;transition:transform .1s}
-#menuBtn2:active{transform:scale(.94)}
+.ov-btn-ghost{font-size:14px;padding:10px 20px;border:0;border-radius:18px;background:rgba(255,255,255,.22);color:#fff;font-weight:bold;cursor:pointer;transition:transform .1s;width:100%}
+.ov-btn-ghost:active{transform:scale(.94)}
 </style>
 </head>
 <body>
 <canvas id="fx"></canvas>
 
-<!-- ==================== MENU VIEW ==================== -->
+<!-- ==================== MENU UTAMA ==================== -->
 <div id="menuView">
   <p class="menu-title">🔠 Cari Kata</p>
-  <p class="menu-sub">Pilih kategori lalu cari kata yang tersembunyi!</p>
+  <p class="menu-sub">Pilih kategori dan tingkat kesulitan!</p>
   <div class="cat-grid" id="catGrid"></div>
+</div>
+
+<!-- ==================== LEVEL SELECT ==================== -->
+<div id="levelView">
+  <div class="lv-header">
+    <h2 id="lvCatTitle">🦁 Hewan</h2>
+    <p>Pilih tingkat kesulitan</p>
+  </div>
+  <div class="lv-list">
+    <div class="lv-card easy" onclick="startGame('easy')">
+      <div class="lv-badge">🟢</div>
+      <div class="lv-info">
+        <div class="lv-name">Mudah</div>
+        <div class="lv-desc">Grid 6×6 · 3 kata pendek (≤5 huruf)<br>Cocok untuk anak-anak & pemula</div>
+        <div class="lv-star">⭐</div>
+      </div>
+    </div>
+    <div class="lv-card medium" onclick="startGame('medium')">
+      <div class="lv-badge">🟡</div>
+      <div class="lv-info">
+        <div class="lv-name">Sedang</div>
+        <div class="lv-desc">Grid 8×8 · 5 kata (≤7 huruf)<br>Tantangan yang pas untuk semua umur</div>
+        <div class="lv-star">⭐⭐</div>
+      </div>
+    </div>
+    <div class="lv-card hard" onclick="startGame('hard')">
+      <div class="lv-badge">🔴</div>
+      <div class="lv-info">
+        <div class="lv-name">Sulit</div>
+        <div class="lv-desc">Grid 10×10 · 7 kata + arah diagonal<br>Untuk yang suka tantangan berat!</div>
+        <div class="lv-star">⭐⭐⭐</div>
+      </div>
+    </div>
+  </div>
+  <button class="btn-back-lv" id="btnBackToMenu">◀ Kembali</button>
 </div>
 
 <!-- ==================== GAME VIEW ==================== -->
 <div id="gameView">
   <div id="hud">
-    <button class="btn-back" id="btnBack">🏠 Menu</button>
-    <span id="lv"></span>
-    <span>Skor: <b id="sc">0</b></span>
+    <button class="btn-sm" id="btnBack">🏠 Menu</button>
+    <div id="hud-mid">
+      <span id="lv"></span>
+      <span id="diff-badge"></span>
+    </div>
+    <span style="white-space:nowrap">Skor: <b id="sc">0</b></span>
   </div>
   <div id="board"></div>
   <div id="list"></div>
 </div>
 
 <!-- Win overlay -->
-<div class="ov" id="ov" style="display:none">
-  <h1 id="ot" style="margin:0;font-size:26px;text-shadow:0 2px 6px #0005"></h1>
-  <div id="oi" style="font-size:16px;opacity:.93"></div>
-  <button class="ov-btn" id="goBtn">Lanjut ▶</button>
-  <button id="menuBtn2">🏠 Kembali ke Menu</button>
+<div class="ov" id="ov">
+  <div class="ov-inner">
+    <div style="font-size:48px">🎉</div>
+    <h2 id="ot" style="margin:0;font-size:22px;text-shadow:0 2px 6px #0005"></h2>
+    <div id="oi" style="font-size:15px;opacity:.93;line-height:1.6"></div>
+    <button class="ov-btn" id="goBtn">Lanjut ▶</button>
+    <button class="ov-btn-ghost" id="changeDiffBtn">🎯 Ganti Kesulitan</button>
+    <button class="ov-btn-ghost" id="menuBtn2">🏠 Kembali ke Menu</button>
+  </div>
 </div>
 
 <script>
+/* ==================== DIFFICULTY CONFIG ==================== */
+const DIFFICULTIES = {
+  easy:   { label: 'Mudah',  emoji: '🟢', N: 6,  wordCount: 3, maxLen: 5,  dirs: [[0,1],[1,0]],            badge: 'easy'   },
+  medium: { label: 'Sedang', emoji: '🟡', N: 8,  wordCount: 5, maxLen: 7,  dirs: [[0,1],[1,0]],            badge: 'medium' },
+  hard:   { label: 'Sulit',  emoji: '🔴', N: 10, wordCount: 7, maxLen: 10, dirs: [[0,1],[1,0],[1,1],[1,-1]], badge: 'hard'  }
+};
+
 /* ==================== DATA KATEGORI ==================== */
 const CATEGORIES = {
   hewan: {
-    name: 'Hewan',
-    icon: '🦁',
+    name: 'Hewan', icon: '🦁',
     theme: 'linear-gradient(160deg,#0f4c1e,#1b6b3a,#4caf50)',
     words: [
       'KUCING','ANJING','SAPI','AYAM','BEBEK','KAMBING','KUDA','SINGA',
@@ -92,38 +166,34 @@ const CATEGORIES = {
     ]
   },
   buah: {
-    name: 'Buah',
-    icon: '🍎',
+    name: 'Buah', icon: '🍎',
     theme: 'linear-gradient(160deg,#c62828,#e53935,#ff8f00)',
     words: [
       'APEL','JERUK','PISANG','MANGGA','ANGGUR','MELON','SALAK','PEPAYA',
       'JAMBU','DURIAN','ALPUKAT','KIWI','PEAR','CERI','LEMON','NANAS',
-      'SEMANGKA','MARKISA','LENGKENG','RAMBUTAN','SAWO','KESEMEK','SIRSAK','BELIMBING'
+      'SEMANGKA','MARKISA','LENGKENG','RAMBUTAN','SAWO','SIRSAK','BELIMBING'
     ]
   },
   sayur: {
-    name: 'Sayuran',
-    icon: '🥦',
+    name: 'Sayuran', icon: '🥦',
     theme: 'linear-gradient(160deg,#1b5e20,#2e7d32,#66bb6a)',
     words: [
       'WORTEL','KUBIS','TOMAT','TERONG','BAYAM','KANGKUNG','LABU','JAGUNG',
       'BUNCIS','MENTIMUN','SELADA','LOBAK','SELEDRI','KENTANG','BROKOLI',
-      'ASPARAGUS','PAPRIKA','CABAI','DAUN','PARE','SINGKONG','REBUNG'
+      'PAPRIKA','CABAI','PARE','SINGKONG','REBUNG'
     ]
   },
   warna: {
-    name: 'Warna',
-    icon: '🎨',
+    name: 'Warna', icon: '🎨',
     theme: 'linear-gradient(160deg,#6a11cb,#8e2de2,#ff416c)',
     words: [
       'MERAH','BIRU','KUNING','HIJAU','UNGU','ORANYE','HITAM','PUTIH',
-      'ABU','COKLAT','PINK','MAROON','TOSCA','NILA','MERAH MUDA',
-      'LAVENDER','KREM','COKLAT','MAGENTA','SILVER','EMAS','BIRU TUA'
+      'ABU','COKLAT','PINK','MAROON','TOSCA','NILA','LAVENDER','KREM',
+      'MAGENTA','SILVER','EMAS'
     ]
   },
   negara: {
-    name: 'Negara',
-    icon: '🌍',
+    name: 'Negara', icon: '🌍',
     theme: 'linear-gradient(160deg,#0d47a1,#1565c0,#42a5f5)',
     words: [
       'INDONESIA','MALAYSIA','SINGAPURA','THAILAND','VIETNAM','FILIPINA',
@@ -133,8 +203,7 @@ const CATEGORIES = {
     ]
   },
   tubuh: {
-    name: 'Tubuh',
-    icon: '👃',
+    name: 'Tubuh', icon: '👃',
     theme: 'linear-gradient(160deg,#880e4f,#c2185b,#f06292)',
     words: [
       'MATA','TELINGA','HIDUNG','MULUT','GIGI','LIDAH','TANGAN','KAKI',
@@ -143,23 +212,21 @@ const CATEGORIES = {
     ]
   },
   sekolah: {
-    name: 'Sekolah',
-    icon: '🎒',
+    name: 'Sekolah', icon: '🎒',
     theme: 'linear-gradient(160deg,#004d40,#00796b,#4db6ac)',
     words: [
       'BUKU','PENSIL','PULPEN','MEJA','KURSI','PAPAN','GURU','MURID',
-      'KELAS','UJIAN','NILAI','RAPORT','KANTIN','PERPUSTAKAAN','KAPUR',
-      'PENGGARIS','GUNTING','KERTAS','PETA','GLOBE','PENGHAPUS','RAPOR'
+      'KELAS','UJIAN','NILAI','RAPORT','KANTIN','KAPUR',
+      'PENGGARIS','GUNTING','KERTAS','PETA','GLOBE','PENGHAPUS'
     ]
   },
   kota: {
-    name: 'Kota Indonesia',
-    icon: '🏙️',
+    name: 'Kota Indonesia', icon: '🏙️',
     theme: 'linear-gradient(160deg,#bf360c,#e64a19,#ffb74d)',
     words: [
       'JAKARTA','BANDUNG','SURABAYA','MEDAN','SEMARANG','MAKASSAR','BALI',
       'JOGJA','SOLO','MALANG','BOGOR','BEKASI','DEPOK','BATAM','MANADO',
-      'PADANG','PALEMBANG','PEKANBARU','BANJARMASIN','PONTIANAK','ACEH',
+      'PADANG','PALEMBANG','PEKANBARU','PONTIANAK','ACEH',
       'KUPANG','AMBON','JAYAPURA','SORONG','TERNATE','KENDARI','PALU'
     ]
   }
@@ -167,16 +234,17 @@ const CATEGORIES = {
 
 /* ==================== STATE ==================== */
 let currentCatKey = null;
+let currentDiff = null;
 let level = 0;
 let N = 8;
+let DIRS_ACTIVE = [[0,1],[1,0]];
 let grid, wordList, foundSet, score = 0, cells, startCell = null, selPath = [];
-
-const DIRS = [[0, 1], [1, 0]]; // hanya mendatar dan menurun agar mudah dibaca anak
 
 /* ==================== UTILS ==================== */
 const $ = id => document.getElementById(id);
-const menuView = $('menuView');
-const gameView = $('gameView');
+const menuView  = $('menuView');
+const levelView = $('levelView');
+const gameView  = $('gameView');
 
 /* ==================== SOUND ==================== */
 let ac;
@@ -190,17 +258,59 @@ function tone(f, d = .12, type = 'sine', at = 0, v = .15) {
   } catch (e) {}
 }
 const buzz = p => navigator.vibrate && navigator.vibrate(p);
-const sfxClick = () => tone(600, .06, 'sine', 0, .14);
+const sfxClick  = () => tone(600, .06, 'sine', 0, .14);
 const sfxSelect = () => tone(400, .06, 'sine', 0, .1);
-const sfxFound = () => [523, 659, 784, 1047].forEach((f, i) => tone(f, .18, 'triangle', i * .09));
-const sfxFail = () => { tone(150, .22, 'sawtooth', 0, .1); buzz(80); };
-const sfxWin = () => [523, 659, 784, 659, 784, 1047, 1319].forEach((f, i) => tone(f, .22, 'square', i * .11, .08));
+const sfxFound  = () => [523, 659, 784, 1047].forEach((f, i) => tone(f, .18, 'triangle', i * .09));
+const sfxFail   = () => { tone(150, .22, 'sawtooth', 0, .1); buzz(80); };
+const sfxWin    = () => [523, 659, 784, 659, 784, 1047, 1319].forEach((f, i) => tone(f, .22, 'square', i * .11, .08));
 
-/* ==================== MENU ==================== */
+/* ==================== NAVIGATION ==================== */
+function showMenu() {
+  menuView.style.display  = 'flex';
+  levelView.style.display = 'none';
+  gameView.style.display  = 'none';
+  $('ov').style.display   = 'none';
+  document.body.style.background = 'linear-gradient(160deg,#3a1c71,#d76d77,#ffaf7b)';
+}
+
+function showLevelSelect(key) {
+  sfxClick();
+  currentCatKey = key;
+  const cat = CATEGORIES[key];
+  $('lvCatTitle').textContent = cat.icon + ' ' + cat.name;
+  document.body.style.background = cat.theme;
+  menuView.style.display  = 'none';
+  levelView.style.display = 'flex';
+  gameView.style.display  = 'none';
+}
+
+function startGame(diffKey) {
+  sfxClick();
+  currentDiff = diffKey;
+  level = 0;
+  score = 0;
+  $('sc').textContent = '0';
+  levelView.style.display = 'none';
+  gameView.style.display  = 'flex';
+  // Update difficulty badge
+  const diff = DIFFICULTIES[diffKey];
+  const badge = $('diff-badge');
+  badge.textContent   = diff.emoji + ' ' + diff.label;
+  badge.className     = 'diff-badge ' + diff.badge;
+  badge.id            = 'diff-badge'; // preserve id
+  buildLevel();
+  try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); } catch (e) {}
+}
+
+$('btnBack').onclick       = () => { sfxClick(); gameView.style.display = 'none'; $('ov').style.display = 'none'; showLevelSelect(currentCatKey); };
+$('btnBackToMenu').onclick = () => { sfxClick(); showMenu(); };
+$('menuBtn2').onclick      = showMenu;
+$('changeDiffBtn').onclick = () => { sfxClick(); $('ov').style.display = 'none'; gameView.style.display = 'none'; showLevelSelect(currentCatKey); };
+
+/* ==================== RENDER MENU ==================== */
 function renderMenu() {
-  const grid = $('catGrid');
-  grid.innerHTML = Object.entries(CATEGORIES).map(([key, cat]) => `
-    <div class="cat-card" onclick="startCategory('${key}')">
+  $('catGrid').innerHTML = Object.entries(CATEGORIES).map(([key, cat]) => `
+    <div class="cat-card" onclick="showLevelSelect('${key}')">
       <div class="cat-icon">${cat.icon}</div>
       <div class="cat-name">${cat.name}</div>
       <div class="cat-count">${cat.words.length} kata</div>
@@ -208,137 +318,130 @@ function renderMenu() {
   `).join('');
 }
 
-function startCategory(key) {
-  sfxClick();
-  currentCatKey = key;
-  level = 0;
-  score = 0;
-  $('sc').textContent = '0';
-  const cat = CATEGORIES[key];
-  document.body.style.background = cat.theme;
-  menuView.style.display = 'none';
-  gameView.style.display = 'flex';
-  buildLevel();
-  try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); } catch (e) {}
-}
-
-function returnToMenu() {
-  sfxClick();
-  gameView.style.display = 'none';
-  $('ov').style.display = 'none';
-  menuView.style.display = 'flex';
-  document.body.style.background = 'linear-gradient(160deg,#3a1c71,#d76d77,#ffaf7b)';
-  if ('speechSynthesis' in window) speechSynthesis.cancel();
-}
-
-$('btnBack').onclick = returnToMenu;
-$('menuBtn2').onclick = returnToMenu;
-
 /* ==================== GRID BUILDER ==================== */
-/**
- * BUGFIX: Kata yang GAGAL ditempatkan ke dalam grid (karena 300 percobaan habis)
- * akan dihapus dari daftar wordList sehingga tidak muncul di daftar
- * yang harus dicari tapi tidak ada di grid.
- */
 function buildLevel() {
-  const cat = CATEGORIES[currentCatKey];
-  // Grid ukuran 8 di semua level agar konsisten
-  N = 8;
+  const cat  = CATEGORIES[currentCatKey];
+  const diff = DIFFICULTIES[currentDiff];
+  N           = diff.N;
+  DIRS_ACTIVE = diff.dirs;
 
-  // Filter kata yang panjangnya <= N, lalu acak dan ambil 5
-  const eligible = cat.words.filter(w => w.replace(/\s/g, '').length <= N);
-  const shuffled = [...eligible].sort(() => Math.random() - .5);
+  // Filter kata sesuai panjang maksimum difficulty
+  const eligible = cat.words.filter(w => w.replace(/\s/g,'').length <= diff.maxLen);
+  const shuffled  = [...eligible].sort(() => Math.random() - .5);
 
   grid = Array.from({ length: N }, () => Array(N).fill(''));
 
-  // Coba tempatkan kata satu per satu, HANYA tambahkan ke wordList jika BERHASIL
   const placed = [];
   for (const word of shuffled) {
-    const cleanWord = word.replace(/\s/g, ''); // hapus spasi untuk grid
-    const displayWord = word; // tampilkan dengan spasi aslinya
-    if (placed.length >= 5) break;
-    if (tryPlace(cleanWord)) {
-      placed.push({ display: displayWord, clean: cleanWord });
+    if (placed.length >= diff.wordCount) break;
+    const clean = word.replace(/\s/g, '');
+    if (clean.length > N) continue; // panjang kata tidak melebihi sisi grid
+    if (tryPlace(clean)) {
+      placed.push({ display: word, clean });
     }
   }
 
-  wordList = placed; // HANYA kata yang berhasil ditempatkan!
+  // Fallback: jika tidak cukup kata, relaksasi panjang sedikit
+  if (placed.length < 2) {
+    const fallback = cat.words.filter(w => w.replace(/\s/g,'').length <= N)
+      .sort(() => Math.random() - .5);
+    for (const word of fallback) {
+      if (placed.length >= diff.wordCount) break;
+      const clean = word.replace(/\s/g, '');
+      if (placed.some(p => p.clean === clean)) continue;
+      if (tryPlace(clean)) placed.push({ display: word, clean });
+    }
+  }
+
+  wordList = placed;
   foundSet = new Set();
 
-  // Isi sisa grid dengan huruf acak
+  // Isi sel kosong dengan huruf acak
   const FILLER = 'ABCDEFGHIJKLMNOPRSTUW';
   for (let r = 0; r < N; r++)
     for (let c = 0; c < N; c++)
       if (!grid[r][c]) grid[r][c] = FILLER[Math.random() * FILLER.length | 0];
 
-  // Render board
+  // --- Render board ---
+  const diff2 = DIFFICULTIES[currentDiff];
   $('lv').textContent = 'Level ' + (level + 1) + ' · ' + CATEGORIES[currentCatKey].name;
-  const board = $('board');
-  board.innerHTML = '';
-  board.style.gridTemplateColumns = `repeat(${N},1fr)`;
+
+  const boardEl = $('board');
+  boardEl.innerHTML = '';
+  boardEl.style.gridTemplateColumns = `repeat(${N},1fr)`;
+
+  // Ukuran cell adaptif berdasarkan N
+  const boardSize = Math.min(window.innerWidth * 0.96, window.innerHeight * 0.52, 520);
+  const cellSize  = Math.floor(boardSize / N) - 3;
+  boardEl.style.width  = (cellSize * N + 3 * (N - 1)) + 'px';
+  boardEl.style.gap    = '3px';
+
+  const fontSize = Math.max(10, Math.min(Math.floor(cellSize * 0.5), 24));
+
   cells = [];
   for (let r = 0; r < N; r++) {
     for (let c = 0; c < N; c++) {
       const d = document.createElement('div');
-      d.className = 'c';
+      d.className   = 'c';
       d.textContent = grid[r][c];
-      d.dataset.r = r;
-      d.dataset.c = c;
-      board.appendChild(d);
+      d.dataset.r   = r;
+      d.dataset.c   = c;
+      d.style.width  = cellSize + 'px';
+      d.style.height = cellSize + 'px';
+      d.style.fontSize = fontSize + 'px';
+      boardEl.appendChild(d);
       cells.push(d);
     }
   }
 
-  // Render word list — tampilkan dengan format asli (ada spasi)
+  // --- Render word list ---
   $('list').innerHTML = wordList.map(item =>
     `<span class="w" id="wc-${item.clean}">${item.display}</span>`
   ).join('');
 
-  // Jika tidak ada kata yang bisa ditempatkan (sangat jarang), fallback
-  if (wordList.length === 0) {
-    setTimeout(buildLevel, 100);
-  }
+  if (wordList.length === 0) setTimeout(buildLevel, 100);
 }
 
-/**
- * Coba tempatkan satu kata ke dalam grid.
- * Return true jika berhasil, false jika tidak dalam 300 percobaan.
- */
+/* --- Penempatan kata (mendukung semua arah dari DIRS_ACTIVE) --- */
 function tryPlace(word) {
-  for (let attempt = 0; attempt < 300; attempt++) {
-    const [dr, dc] = DIRS[Math.random() * DIRS.length | 0];
-    const r = Math.random() * N | 0;
-    const c = Math.random() * N | 0;
+  for (let attempt = 0; attempt < 400; attempt++) {
+    const [dr, dc] = DIRS_ACTIVE[Math.random() * DIRS_ACTIVE.length | 0];
+    const r  = Math.random() * N | 0;
+    const c  = Math.random() * N | 0;
     const er = r + dr * (word.length - 1);
     const ec = c + dc * (word.length - 1);
     if (er < 0 || er >= N || ec < 0 || ec >= N) continue;
-
-    let canPlace = true;
+    let ok = true;
     for (let i = 0; i < word.length; i++) {
-      const existing = grid[r + dr * i][c + dc * i];
-      if (existing && existing !== word[i]) { canPlace = false; break; }
+      const ex = grid[r + dr * i][c + dc * i];
+      if (ex && ex !== word[i]) { ok = false; break; }
     }
-    if (!canPlace) continue;
-
-    // Tempatkan
+    if (!ok) continue;
     for (let i = 0; i < word.length; i++) grid[r + dr * i][c + dc * i] = word[i];
     return true;
   }
-  return false; // gagal
+  return false;
 }
 
-/* ==================== INPUT HANDLING ==================== */
+/* ==================== INPUT ==================== */
 const cellAt = (x, y) => {
   const e = document.elementFromPoint(x, y);
   return e && e.dataset && e.dataset.r !== undefined ? e : null;
 };
 
+/**
+ * Hitung path dari sel A ke B.
+ * Untuk mode mudah/sedang: hanya mendatar (dc==0) atau menurun (dr==0).
+ * Untuk mode sulit: tambah diagonal (|dr|==|dc|).
+ */
 function calcPath(a, b) {
   const dr = b.r - a.r, dc = b.c - a.c;
-  if (!(dr === 0 || dc === 0)) return null;
-  const n = Math.max(Math.abs(dr), Math.abs(dc));
+  const isDiagAllowed = DIRS_ACTIVE.length > 2; // sulit punya diagonal
+  const isValid = (dr === 0 || dc === 0) || (isDiagAllowed && Math.abs(dr) === Math.abs(dc));
+  if (!isValid) return null;
+  const n  = Math.max(Math.abs(dr), Math.abs(dc));
   const sr = Math.sign(dr), sc = Math.sign(dc);
-  const p = [];
+  const p  = [];
   for (let i = 0; i <= n; i++) p.push([a.r + sr * i, a.c + sc * i]);
   return p;
 }
@@ -348,16 +451,16 @@ function paintSel() {
   selPath.forEach(([r, c]) => cells[r * N + c].classList.add('sel'));
 }
 
-const board = $('board');
-board.addEventListener('pointerdown', e => {
+const boardEl = $('board');
+boardEl.addEventListener('pointerdown', e => {
   const el = cellAt(e.clientX, e.clientY); if (!el) return;
-  board.setPointerCapture(e.pointerId);
+  boardEl.setPointerCapture(e.pointerId);
   startCell = { r: +el.dataset.r, c: +el.dataset.c };
-  selPath = [[startCell.r, startCell.c]];
+  selPath   = [[startCell.r, startCell.c]];
   paintSel(); sfxSelect();
 });
 
-board.addEventListener('pointermove', e => {
+boardEl.addEventListener('pointermove', e => {
   if (!startCell) return;
   const el = cellAt(e.clientX, e.clientY); if (!el) return;
   const p = calcPath(startCell, { r: +el.dataset.r, c: +el.dataset.c });
@@ -367,12 +470,12 @@ board.addEventListener('pointermove', e => {
   } else if (p) selPath = p;
 });
 
-board.addEventListener('pointerup', () => {
+boardEl.addEventListener('pointerup', () => {
   if (!startCell) return;
   const typed = selPath.map(([r, c]) => grid[r][c]).join('');
-  const rev = [...typed].reverse().join('');
-  const hit = wordList.find(item => !foundSet.has(item.clean) && (item.clean === typed || item.clean === rev));
-  const cur = selPath.slice(); startCell = null; selPath = []; paintSel();
+  const rev   = [...typed].reverse().join('');
+  const hit   = wordList.find(item => !foundSet.has(item.clean) && (item.clean === typed || item.clean === rev));
+  const cur   = selPath.slice(); startCell = null; selPath = []; paintSel();
   if (hit) markFound(hit, cur);
   else if (cur.length > 1) {
     cur.forEach(([r, c]) => {
@@ -391,8 +494,8 @@ function markFound(item, path) {
   path.forEach(([r, c], i) => {
     const el = cells[r * N + c];
     el.classList.remove('found'); void el.offsetWidth;
-    el.style.background = `hsl(${hue},70%,42%)`;
-    el.style.animationDelay = i * 55 + 'ms';
+    el.style.background    = `hsl(${hue},70%,42%)`;
+    el.style.animationDelay = i * 50 + 'ms';
     el.classList.add('found');
   });
   const chip = $('wc-' + item.clean);
@@ -401,7 +504,7 @@ function markFound(item, path) {
   $('sc').textContent = score;
   sfxFound(); buzz([30, 40, 30]);
   const mid = path[path.length >> 1];
-  const rc = cells[mid[0] * N + mid[1]].getBoundingClientRect();
+  const rc  = cells[mid[0] * N + mid[1]].getBoundingClientRect();
   confetti(rc.left + rc.width / 2, rc.top + rc.height / 2, 50);
   if (foundSet.size === wordList.length) setTimeout(showWin, 900);
 }
@@ -410,10 +513,13 @@ function markFound(item, path) {
 function showWin() {
   score += 50; $('sc').textContent = score; sfxWin(); buzz([100, 50, 100, 50, 200]);
   confetti(innerWidth / 2, innerHeight / 3, 200);
-  const best = Math.max(score, +localStorage.getItem('carikata_best') || 0);
-  localStorage.setItem('carikata_best', best);
+  const bestKey = 'carikata_best_' + currentCatKey + '_' + currentDiff;
+  const best    = Math.max(score, +localStorage.getItem(bestKey) || 0);
+  localStorage.setItem(bestKey, best);
+  const diff    = DIFFICULTIES[currentDiff];
   $('ot').textContent = 'Level ' + (level + 1) + ' Selesai! 🎉';
-  $('oi').innerHTML = 'Skor: ' + score + ' &nbsp;·&nbsp; Terbaik: ' + best;
+  $('oi').innerHTML   = diff.emoji + ' ' + diff.label +
+    '<br>Skor: <b>' + score + '</b> &nbsp;·&nbsp; Terbaik: <b>' + best + '</b>';
   $('ov').style.display = 'flex';
 }
 
@@ -438,11 +544,7 @@ function confetti(x, y, n) {
 
 function tickConfetti() {
   cx.clearRect(0, 0, cv.width, cv.height);
-  ps.forEach(p => {
-    p.x += p.vx; p.y += p.vy; p.vy += .35; p.l--;
-    cx.fillStyle = `hsl(${p.h},90%,60%)`;
-    cx.fillRect(p.x, p.y, p.s, p.s);
-  });
+  ps.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += .35; p.l--; cx.fillStyle = `hsl(${p.h},90%,60%)`; cx.fillRect(p.x, p.y, p.s, p.s); });
   ps = ps.filter(p => p.l > 0 && p.y < cv.height);
   if (ps.length) requestAnimationFrame(tickConfetti);
   else { running = false; cx.clearRect(0, 0, cv.width, cv.height); }
@@ -450,6 +552,7 @@ function tickConfetti() {
 
 /* ==================== INIT ==================== */
 renderMenu();
+showMenu();
 </script>
 <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');</script>
 </body>
