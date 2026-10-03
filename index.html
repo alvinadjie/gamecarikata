@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Cari Kata</title>
+<title>Cari Kata / Word Search</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#3a1c71">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -11,34 +11,48 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;background:linear-gradient(160deg,#3a1c71,#d76d77,#ffaf7b);color:#fff;font-family:'Segoe UI',system-ui,sans-serif;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
 
+/* ===== LANGUAGE SELECT ===== */
+#langView{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:20px}
+.lang-title{font-size:32px;font-weight:900;margin:0;text-shadow:0 3px 10px #0005;text-align:center;letter-spacing:1px}
+.lang-sub{font-size:15px;opacity:.9;margin:0;text-align:center}
+.lang-list{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;width:100%;max-width:380px}
+.lang-card{flex:1;min-width:140px;max-width:170px;background:rgba(255,255,255,.22);border:2.5px solid rgba(255,255,255,.45);border-radius:24px;padding:20px 14px;display:flex;flex-direction:column;align-items:center;cursor:pointer;box-shadow:0 6px 18px #0003;backdrop-filter:blur(10px);transition:transform .14s,background .14s;gap:10px}
+.lang-card:active{transform:scale(.93);background:rgba(255,255,255,.4)}
+.lang-flag{font-size:52px;line-height:1}
+.lang-name{font-size:17px;font-weight:900;text-shadow:0 1px 3px #0004}
+.lang-native{font-size:12px;opacity:.85;font-weight:600}
+
 /* ===== MENU UTAMA ===== */
-#menuView{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 12px 28px}
-.menu-title{font-size:28px;font-weight:900;margin:0 0 4px;text-shadow:0 2px 8px #0005;text-align:center}
-.menu-sub{font-size:14px;opacity:.9;margin:0 0 18px;text-align:center}
-.cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:100%;max-width:480px}
+#menuView{width:100%;height:100%;display:none;flex-direction:column;align-items:center;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 12px 28px}
+.menu-header{width:100%;max-width:480px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px}
+.menu-title{font-size:22px;font-weight:900;margin:0;text-shadow:0 2px 8px #0005;flex:1}
+.btn-lang{background:rgba(255,255,255,.28);border:1.5px solid rgba(255,255,255,.5);color:#fff;font-size:13px;font-weight:700;padding:7px 13px;border-radius:16px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:transform .1s;outline:none;white-space:nowrap}
+.btn-lang:active{transform:scale(.93)}
+.menu-sub{font-size:13px;opacity:.88;margin:0 0 14px;text-align:center;width:100%;max-width:480px}
+.cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;width:100%;max-width:480px}
 @media(min-width:540px){.cat-grid{grid-template-columns:repeat(3,1fr)}}
 .cat-card{background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);border-radius:20px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;cursor:pointer;box-shadow:0 5px 14px #0003;backdrop-filter:blur(8px);transition:transform .13s,background .13s}
 .cat-card:active{transform:scale(.94);background:rgba(255,255,255,.35)}
-.cat-icon{font-size:40px;margin-bottom:7px;filter:drop-shadow(0 3px 5px #0003)}
+.cat-icon{font-size:38px;margin-bottom:6px;filter:drop-shadow(0 3px 5px #0003)}
 .cat-name{font-size:14px;font-weight:800;text-align:center;text-shadow:0 1px 2px #0003}
-.cat-count{font-size:12px;opacity:.85;margin-top:4px;background:rgba(255,255,255,.22);padding:3px 10px;border-radius:12px;font-weight:700}
+.cat-count{font-size:11px;opacity:.85;margin-top:4px;background:rgba(255,255,255,.22);padding:2px 9px;border-radius:11px;font-weight:700}
 
 /* ===== LEVEL SELECT ===== */
-#levelView{width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px;gap:16px}
+#levelView{width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px;gap:14px}
 .lv-header{text-align:center}
-.lv-header h2{margin:0 0 6px;font-size:22px;font-weight:900;text-shadow:0 2px 6px #0005}
-.lv-header p{margin:0;font-size:14px;opacity:.9}
-.lv-list{display:flex;flex-direction:column;gap:14px;width:100%;max-width:380px}
-.lv-card{display:flex;align-items:center;gap:16px;padding:16px 20px;border-radius:22px;cursor:pointer;border:2.5px solid rgba(255,255,255,.5);box-shadow:0 5px 16px #0003;backdrop-filter:blur(8px);transition:transform .13s,background .13s}
+.lv-header h2{margin:0 0 4px;font-size:21px;font-weight:900;text-shadow:0 2px 6px #0005}
+.lv-header p{margin:0;font-size:13px;opacity:.9}
+.lv-list{display:flex;flex-direction:column;gap:12px;width:100%;max-width:380px}
+.lv-card{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:22px;cursor:pointer;border:2.5px solid rgba(255,255,255,.5);box-shadow:0 5px 16px #0003;backdrop-filter:blur(8px);transition:transform .13s}
 .lv-card:active{transform:scale(.95)}
 .lv-card.easy{background:linear-gradient(135deg,rgba(76,175,80,.45),rgba(56,142,60,.55))}
 .lv-card.medium{background:linear-gradient(135deg,rgba(255,193,7,.4),rgba(245,124,0,.5))}
 .lv-card.hard{background:linear-gradient(135deg,rgba(244,67,54,.4),rgba(183,28,28,.55))}
-.lv-badge{font-size:36px;flex-shrink:0}
+.lv-badge{font-size:34px;flex-shrink:0}
 .lv-info{flex:1}
-.lv-name{font-size:18px;font-weight:900;text-shadow:0 1px 3px #0004;margin-bottom:4px}
-.lv-desc{font-size:12px;opacity:.9;line-height:1.4}
-.lv-star{font-size:18px;letter-spacing:2px}
+.lv-name{font-size:17px;font-weight:900;text-shadow:0 1px 3px #0004;margin-bottom:3px}
+.lv-desc{font-size:11px;opacity:.9;line-height:1.5}
+.lv-star{font-size:16px;letter-spacing:2px;margin-top:2px}
 .btn-back-lv{background:rgba(255,255,255,.25);border:1.5px solid rgba(255,255,255,.45);color:#fff;font-size:13px;font-weight:700;padding:8px 16px;border-radius:16px;cursor:pointer;align-self:flex-start;display:inline-flex;align-items:center;gap:5px;transition:transform .1s;outline:none}
 .btn-back-lv:active{transform:scale(.93)}
 
@@ -65,69 +79,64 @@ html,body{margin:0;height:100%;background:linear-gradient(160deg,#3a1c71,#d76d77
 .w.done{text-decoration:line-through;opacity:.55;transform:scale(.9);background:#6bcB3d55;border-color:#6bcB3d}
 .w.bump{animation:pop .45s}
 #fx{position:fixed;inset:0;pointer-events:none;z-index:5}
-/* Win overlay */
 .ov{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;box-sizing:border-box;z-index:20;backdrop-filter:blur(6px)}
-.ov-inner{background:rgba(58,28,113,.88);border-radius:28px;padding:28px 24px;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:340px;width:100%;box-shadow:0 12px 40px #0006;border:2px solid rgba(255,255,255,.3)}
-.ov-btn{font-size:18px;padding:12px 32px;border:0;border-radius:22px;background:#ffd93d;color:#3a1c71;font-weight:bold;box-shadow:0 4px 0 #c9a415;cursor:pointer;transition:transform .1s;width:100%}
+.ov-inner{background:rgba(58,28,113,.88);border-radius:28px;padding:26px 22px;display:flex;flex-direction:column;align-items:center;gap:12px;max-width:340px;width:100%;box-shadow:0 12px 40px #0006;border:2px solid rgba(255,255,255,.3)}
+.ov-btn{font-size:17px;padding:11px 28px;border:0;border-radius:20px;background:#ffd93d;color:#3a1c71;font-weight:bold;box-shadow:0 4px 0 #c9a415;cursor:pointer;transition:transform .1s;width:100%}
 .ov-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #c9a415}
-.ov-btn-ghost{font-size:14px;padding:10px 20px;border:0;border-radius:18px;background:rgba(255,255,255,.22);color:#fff;font-weight:bold;cursor:pointer;transition:transform .1s;width:100%}
+.ov-btn-ghost{font-size:13px;padding:9px 18px;border:0;border-radius:16px;background:rgba(255,255,255,.22);color:#fff;font-weight:bold;cursor:pointer;transition:transform .1s;width:100%}
 .ov-btn-ghost:active{transform:scale(.94)}
 </style>
 </head>
 <body>
 <canvas id="fx"></canvas>
 
+<!-- ==================== LANGUAGE SELECT ==================== -->
+<div id="langView">
+  <p class="lang-title">🔠 Word Search</p>
+  <p class="lang-sub">Pilih bahasa / Choose language</p>
+  <div class="lang-list">
+    <div class="lang-card" onclick="setLang('id')">
+      <div class="lang-flag">🇮🇩</div>
+      <div class="lang-name">Indonesia</div>
+      <div class="lang-native">Bahasa Indonesia</div>
+    </div>
+    <div class="lang-card" onclick="setLang('en')">
+      <div class="lang-flag">🇬🇧</div>
+      <div class="lang-name">English</div>
+      <div class="lang-native">English language</div>
+    </div>
+  </div>
+</div>
+
 <!-- ==================== MENU UTAMA ==================== -->
 <div id="menuView">
-  <p class="menu-title">🔠 Cari Kata</p>
-  <p class="menu-sub">Pilih kategori dan tingkat kesulitan!</p>
+  <div class="menu-header">
+    <p class="menu-title" id="menuTitle">🔠 Cari Kata</p>
+    <button class="btn-lang" id="btnChangeLang" onclick="goToLangSelect()">🌐 Bahasa</button>
+  </div>
+  <p class="menu-sub" id="menuSub">Pilih kategori dan tingkat kesulitan!</p>
   <div class="cat-grid" id="catGrid"></div>
 </div>
 
 <!-- ==================== LEVEL SELECT ==================== -->
 <div id="levelView">
   <div class="lv-header">
-    <h2 id="lvCatTitle">🦁 Hewan</h2>
-    <p>Pilih tingkat kesulitan</p>
+    <h2 id="lvCatTitle"></h2>
+    <p id="lvPickText">Pilih tingkat kesulitan</p>
   </div>
-  <div class="lv-list">
-    <div class="lv-card easy" onclick="startGame('easy')">
-      <div class="lv-badge">🟢</div>
-      <div class="lv-info">
-        <div class="lv-name">Mudah</div>
-        <div class="lv-desc">Grid 6×6 · 3 kata pendek (≤5 huruf)<br>Cocok untuk anak-anak & pemula</div>
-        <div class="lv-star">⭐</div>
-      </div>
-    </div>
-    <div class="lv-card medium" onclick="startGame('medium')">
-      <div class="lv-badge">🟡</div>
-      <div class="lv-info">
-        <div class="lv-name">Sedang</div>
-        <div class="lv-desc">Grid 8×8 · 5 kata (≤7 huruf)<br>Tantangan yang pas untuk semua umur</div>
-        <div class="lv-star">⭐⭐</div>
-      </div>
-    </div>
-    <div class="lv-card hard" onclick="startGame('hard')">
-      <div class="lv-badge">🔴</div>
-      <div class="lv-info">
-        <div class="lv-name">Sulit</div>
-        <div class="lv-desc">Grid 10×10 · 7 kata + arah diagonal<br>Untuk yang suka tantangan berat!</div>
-        <div class="lv-star">⭐⭐⭐</div>
-      </div>
-    </div>
-  </div>
-  <button class="btn-back-lv" id="btnBackToMenu">◀ Kembali</button>
+  <div class="lv-list" id="lvList"></div>
+  <button class="btn-back-lv" id="btnBackToMenu">◀ <span id="btnBackToMenuLabel">Kembali</span></button>
 </div>
 
 <!-- ==================== GAME VIEW ==================== -->
 <div id="gameView">
   <div id="hud">
-    <button class="btn-sm" id="btnBack">🏠 Menu</button>
+    <button class="btn-sm" id="btnBack">🏠 <span id="btnBackLabel">Menu</span></button>
     <div id="hud-mid">
       <span id="lv"></span>
       <span id="diff-badge"></span>
     </div>
-    <span style="white-space:nowrap">Skor: <b id="sc">0</b></span>
+    <span id="scoreLabel" style="white-space:nowrap">Skor: <b id="sc">0</b></span>
   </div>
   <div id="board"></div>
   <div id="list"></div>
@@ -136,149 +145,267 @@ html,body{margin:0;height:100%;background:linear-gradient(160deg,#3a1c71,#d76d77
 <!-- Win overlay -->
 <div class="ov" id="ov">
   <div class="ov-inner">
-    <div style="font-size:48px">🎉</div>
-    <h2 id="ot" style="margin:0;font-size:22px;text-shadow:0 2px 6px #0005"></h2>
-    <div id="oi" style="font-size:15px;opacity:.93;line-height:1.6"></div>
+    <div style="font-size:46px">🎉</div>
+    <h2 id="ot" style="margin:0;font-size:21px;text-shadow:0 2px 6px #0005"></h2>
+    <div id="oi" style="font-size:14px;opacity:.93;line-height:1.7"></div>
     <button class="ov-btn" id="goBtn">Lanjut ▶</button>
     <button class="ov-btn-ghost" id="changeDiffBtn">🎯 Ganti Kesulitan</button>
-    <button class="ov-btn-ghost" id="menuBtn2">🏠 Kembali ke Menu</button>
+    <button class="ov-btn-ghost" id="menuBtn2">🏠 Menu</button>
   </div>
 </div>
 
 <script>
-/* ==================== DIFFICULTY CONFIG ==================== */
-const DIFFICULTIES = {
-  easy:   { label: 'Mudah',  emoji: '🟢', N: 6,  wordCount: 3, maxLen: 5,  dirs: [[0,1],[1,0]],            badge: 'easy'   },
-  medium: { label: 'Sedang', emoji: '🟡', N: 8,  wordCount: 5, maxLen: 7,  dirs: [[0,1],[1,0]],            badge: 'medium' },
-  hard:   { label: 'Sulit',  emoji: '🔴', N: 10, wordCount: 7, maxLen: 10, dirs: [[0,1],[1,0],[1,1],[1,-1]], badge: 'hard'  }
+/* ==================== i18n ==================== */
+const I18N = {
+  id: {
+    appTitle:      '🔠 Cari Kata',
+    menuSub:       'Pilih kategori dan tingkat kesulitan!',
+    langBtn:       '🌐 Bahasa',
+    pickDiff:      'Pilih tingkat kesulitan',
+    back:          'Kembali',
+    menuLabel:     'Menu',
+    scoreLabel:    'Skor:',
+    levelLabel:    'Level',
+    bestLabel:     'Terbaik',
+    nextBtn:       'Lanjut ▶',
+    changeDiff:    '🎯 Ganti Kesulitan',
+    menuBtn:       '🏠 Menu',
+    wordsCount:    'kata',
+    tapHint:       'Geser jarimu untuk menemukan kata',
+    diffEasy:      'Mudah',
+    diffMedium:    'Sedang',
+    diffHard:      'Sulit',
+    descEasy:      'Grid 6×6 · 3 kata pendek (≤5 huruf)\nCocok untuk anak-anak & pemula',
+    descMedium:    'Grid 8×8 · 5 kata (≤7 huruf)\nTantangan yang pas untuk semua umur',
+    descHard:      'Grid 10×10 · 7 kata + arah diagonal\nUntuk yang suka tantangan berat!',
+    levelDone:     'Selesai!',
+  },
+  en: {
+    appTitle:      '🔠 Word Search',
+    menuSub:       'Pick a category and difficulty level!',
+    langBtn:       '🌐 Language',
+    pickDiff:      'Choose difficulty',
+    back:          'Back',
+    menuLabel:     'Menu',
+    scoreLabel:    'Score:',
+    levelLabel:    'Level',
+    bestLabel:     'Best',
+    nextBtn:       'Next ▶',
+    changeDiff:    '🎯 Change Difficulty',
+    menuBtn:       '🏠 Menu',
+    wordsCount:    'words',
+    tapHint:       'Swipe to find the hidden words',
+    diffEasy:      'Easy',
+    diffMedium:    'Medium',
+    diffHard:      'Hard',
+    descEasy:      'Grid 6×6 · 3 short words (≤5 letters)\nPerfect for kids & beginners',
+    descMedium:    'Grid 8×8 · 5 words (≤7 letters)\nJust right for all ages',
+    descHard:      'Grid 10×10 · 7 words + diagonals\nFor those who love a challenge!',
+    levelDone:     'Done!',
+  }
 };
+
+/* ==================== DIFFICULTY CONFIG ==================== */
+const DIFFICULTIES = (lang) => ({
+  easy:   { label: I18N[lang].diffEasy,   emoji:'🟢', N:6,  wordCount:3, maxLen:5,  dirs:[[0,1],[1,0]],             badge:'easy'   },
+  medium: { label: I18N[lang].diffMedium, emoji:'🟡', N:8,  wordCount:5, maxLen:7,  dirs:[[0,1],[1,0]],             badge:'medium' },
+  hard:   { label: I18N[lang].diffHard,   emoji:'🔴', N:10, wordCount:7, maxLen:10, dirs:[[0,1],[1,0],[1,1],[1,-1]], badge:'hard'   }
+});
 
 /* ==================== DATA KATEGORI ==================== */
 const CATEGORIES = {
   hewan: {
-    name: 'Hewan', icon: '🦁',
+    icon: '🦁',
     theme: 'linear-gradient(160deg,#0f4c1e,#1b6b3a,#4caf50)',
-    words: [
-      'KUCING','ANJING','SAPI','AYAM','BEBEK','KAMBING','KUDA','SINGA',
-      'GAJAH','KATAK','DOMBA','BABI','ULAR','MONYET','HARIMAU','ZEBRA',
-      'JERAPAH','BERUANG','RUBAH','PENGUIN','BURUNG','KELINCI','TIKUS','KURA',
-      'ANGSA','KERBAU','RUSA','KIJANG','MACAN','SERIGALA'
-    ]
+    name:  { id: 'Hewan',   en: 'Animals' },
+    words: {
+      id: ['KUCING','ANJING','SAPI','AYAM','BEBEK','KAMBING','KUDA','SINGA',
+           'GAJAH','KATAK','DOMBA','BABI','ULAR','MONYET','HARIMAU','ZEBRA',
+           'JERAPAH','BERUANG','RUBAH','PENGUIN','BURUNG','KELINCI','TIKUS','KURA',
+           'ANGSA','KERBAU','RUSA','KIJANG','MACAN','SERIGALA'],
+      en: ['CAT','DOG','COW','HEN','DUCK','GOAT','HORSE','LION',
+           'ELEPHANT','FROG','SHEEP','PIG','SNAKE','MONKEY','TIGER','ZEBRA',
+           'GIRAFFE','BEAR','FOX','PENGUIN','BIRD','RABBIT','RAT','TURTLE',
+           'GOOSE','BUFFALO','DEER','LEOPARD','WOLF','WHALE']
+    }
   },
   buah: {
-    name: 'Buah', icon: '🍎',
+    icon: '🍎',
     theme: 'linear-gradient(160deg,#c62828,#e53935,#ff8f00)',
-    words: [
-      'APEL','JERUK','PISANG','MANGGA','ANGGUR','MELON','SALAK','PEPAYA',
-      'JAMBU','DURIAN','ALPUKAT','KIWI','PEAR','CERI','LEMON','NANAS',
-      'SEMANGKA','MARKISA','LENGKENG','RAMBUTAN','SAWO','SIRSAK','BELIMBING'
-    ]
+    name:  { id: 'Buah',   en: 'Fruits' },
+    words: {
+      id: ['APEL','JERUK','PISANG','MANGGA','ANGGUR','MELON','SALAK','PEPAYA',
+           'JAMBU','DURIAN','ALPUKAT','KIWI','PEAR','CERI','LEMON','NANAS',
+           'SEMANGKA','MARKISA','LENGKENG','RAMBUTAN','SAWO','SIRSAK','BELIMBING'],
+      en: ['APPLE','ORANGE','BANANA','MANGO','GRAPE','MELON','PAPAYA',
+           'GUAVA','DURIAN','AVOCADO','KIWI','PEAR','CHERRY','LEMON','PINEAPPLE',
+           'WATERMELON','LYCHEE','RAMBUTAN','STARFRUIT','PEACH','PLUM','APRICOT','COCONUT']
+    }
   },
   sayur: {
-    name: 'Sayuran', icon: '🥦',
+    icon: '🥦',
     theme: 'linear-gradient(160deg,#1b5e20,#2e7d32,#66bb6a)',
-    words: [
-      'WORTEL','KUBIS','TOMAT','TERONG','BAYAM','KANGKUNG','LABU','JAGUNG',
-      'BUNCIS','MENTIMUN','SELADA','LOBAK','SELEDRI','KENTANG','BROKOLI',
-      'PAPRIKA','CABAI','PARE','SINGKONG','REBUNG'
-    ]
+    name:  { id: 'Sayuran',  en: 'Vegetables' },
+    words: {
+      id: ['WORTEL','KUBIS','TOMAT','TERONG','BAYAM','KANGKUNG','LABU','JAGUNG',
+           'BUNCIS','MENTIMUN','SELADA','LOBAK','SELEDRI','KENTANG','BROKOLI',
+           'PAPRIKA','CABAI','PARE','SINGKONG','REBUNG'],
+      en: ['CARROT','CABBAGE','TOMATO','EGGPLANT','SPINACH','CORN','PUMPKIN',
+           'BEANS','CUCUMBER','LETTUCE','RADISH','CELERY','POTATO','BROCCOLI',
+           'PEPPER','CHILI','ONION','GARLIC','KALE','LEEK','TURNIP','YAM']
+    }
   },
   warna: {
-    name: 'Warna', icon: '🎨',
+    icon: '🎨',
     theme: 'linear-gradient(160deg,#6a11cb,#8e2de2,#ff416c)',
-    words: [
-      'MERAH','BIRU','KUNING','HIJAU','UNGU','ORANYE','HITAM','PUTIH',
-      'ABU','COKLAT','PINK','MAROON','TOSCA','NILA','LAVENDER','KREM',
-      'MAGENTA','SILVER','EMAS'
-    ]
+    name:  { id: 'Warna',  en: 'Colors' },
+    words: {
+      id: ['MERAH','BIRU','KUNING','HIJAU','UNGU','ORANYE','HITAM','PUTIH',
+           'ABU','COKLAT','PINK','MAROON','TOSCA','NILA','LAVENDER','KREM',
+           'MAGENTA','SILVER','EMAS'],
+      en: ['RED','BLUE','YELLOW','GREEN','PURPLE','ORANGE','BLACK','WHITE',
+           'GRAY','BROWN','PINK','MAROON','TEAL','INDIGO','LAVENDER','CREAM',
+           'MAGENTA','SILVER','GOLD','CYAN','CORAL','BEIGE']
+    }
   },
   negara: {
-    name: 'Negara', icon: '🌍',
+    icon: '🌍',
     theme: 'linear-gradient(160deg,#0d47a1,#1565c0,#42a5f5)',
-    words: [
-      'INDONESIA','MALAYSIA','SINGAPURA','THAILAND','VIETNAM','FILIPINA',
-      'JEPANG','KOREA','CHINA','INDIA','ARAB','MESIR','TURKI','IRAN',
-      'BRAZIL','PRANCIS','ITALIA','JERMAN','INGGRIS','RUSIA','KANADA',
-      'AUSTRALIA','MEKSIKO','ARGENTINA','NIGERIA','GHANA'
-    ]
+    name:  { id: 'Negara',  en: 'Countries' },
+    words: {
+      id: ['INDONESIA','MALAYSIA','SINGAPURA','THAILAND','VIETNAM','FILIPINA',
+           'JEPANG','KOREA','CHINA','INDIA','ARAB','MESIR','TURKI','IRAN',
+           'BRAZIL','PRANCIS','ITALIA','JERMAN','INGGRIS','RUSIA','KANADA',
+           'AUSTRALIA','MEKSIKO','ARGENTINA','NIGERIA','GHANA'],
+      en: ['INDONESIA','MALAYSIA','SINGAPORE','THAILAND','VIETNAM','PHILIPPINES',
+           'JAPAN','KOREA','CHINA','INDIA','EGYPT','TURKEY','IRAN',
+           'BRAZIL','FRANCE','ITALY','GERMANY','ENGLAND','RUSSIA','CANADA',
+           'AUSTRALIA','MEXICO','ARGENTINA','NIGERIA','GHANA','KENYA','PERU']
+    }
   },
   tubuh: {
-    name: 'Tubuh', icon: '👃',
+    icon: '👃',
     theme: 'linear-gradient(160deg,#880e4f,#c2185b,#f06292)',
-    words: [
-      'MATA','TELINGA','HIDUNG','MULUT','GIGI','LIDAH','TANGAN','KAKI',
-      'JARI','KEPALA','LEHER','BAHU','PERUT','PUNGGUNG','DADA','LUTUT',
-      'SIKU','PAHA','BETIS','TUMIT','RAMBUT','ALIS','PIPI','DAGU','JIDAT'
-    ]
+    name:  { id: 'Tubuh',  en: 'Body Parts' },
+    words: {
+      id: ['MATA','TELINGA','HIDUNG','MULUT','GIGI','LIDAH','TANGAN','KAKI',
+           'JARI','KEPALA','LEHER','BAHU','PERUT','PUNGGUNG','DADA','LUTUT',
+           'SIKU','PAHA','BETIS','TUMIT','RAMBUT','ALIS','PIPI','DAGU','JIDAT'],
+      en: ['EYE','EAR','NOSE','MOUTH','TOOTH','TONGUE','HAND','FOOT',
+           'FINGER','HEAD','NECK','SHOULDER','BELLY','BACK','CHEST','KNEE',
+           'ELBOW','THIGH','CALF','HEEL','HAIR','BROW','CHEEK','CHIN','FOREHEAD']
+    }
   },
   sekolah: {
-    name: 'Sekolah', icon: '🎒',
+    icon: '🎒',
     theme: 'linear-gradient(160deg,#004d40,#00796b,#4db6ac)',
-    words: [
-      'BUKU','PENSIL','PULPEN','MEJA','KURSI','PAPAN','GURU','MURID',
-      'KELAS','UJIAN','NILAI','RAPORT','KANTIN','KAPUR',
-      'PENGGARIS','GUNTING','KERTAS','PETA','GLOBE','PENGHAPUS'
-    ]
+    name:  { id: 'Sekolah',  en: 'School' },
+    words: {
+      id: ['BUKU','PENSIL','PULPEN','MEJA','KURSI','PAPAN','GURU','MURID',
+           'KELAS','UJIAN','NILAI','RAPORT','KANTIN','KAPUR',
+           'PENGGARIS','GUNTING','KERTAS','PETA','GLOBE','PENGHAPUS'],
+      en: ['BOOK','PENCIL','PEN','TABLE','CHAIR','BOARD','TEACHER','STUDENT',
+           'CLASS','EXAM','GRADE','CANTEEN','CHALK','RULER','SCISSORS',
+           'PAPER','MAP','GLOBE','ERASER','DESK','LIBRARY','SCHOOL']
+    }
   },
   kota: {
-    name: 'Kota Indonesia', icon: '🏙️',
+    icon: '🏙️',
     theme: 'linear-gradient(160deg,#bf360c,#e64a19,#ffb74d)',
-    words: [
-      'JAKARTA','BANDUNG','SURABAYA','MEDAN','SEMARANG','MAKASSAR','BALI',
-      'JOGJA','SOLO','MALANG','BOGOR','BEKASI','DEPOK','BATAM','MANADO',
-      'PADANG','PALEMBANG','PEKANBARU','PONTIANAK','ACEH',
-      'KUPANG','AMBON','JAYAPURA','SORONG','TERNATE','KENDARI','PALU'
-    ]
+    name:  { id: 'Kota Indonesia',  en: 'World Cities' },
+    words: {
+      id: ['JAKARTA','BANDUNG','SURABAYA','MEDAN','SEMARANG','MAKASSAR','BALI',
+           'JOGJA','SOLO','MALANG','BOGOR','BEKASI','DEPOK','BATAM','MANADO',
+           'PADANG','PALEMBANG','PEKANBARU','PONTIANAK','ACEH',
+           'KUPANG','AMBON','JAYAPURA','SORONG','TERNATE','KENDARI','PALU'],
+      en: ['LONDON','PARIS','TOKYO','SEOUL','BEIJING','DELHI','SYDNEY',
+           'BERLIN','ROME','MADRID','CAIRO','DUBAI','MOSCOW','TORONTO',
+           'BANGKOK','JAKARTA','MANILA','HANOI','VIENNA','OSLO','ATHENS',
+           'LISBON','DUBLIN','OSLO','LIMA','BOGOTA','NAIROBI','ACCRA']
+    }
   }
 };
 
 /* ==================== STATE ==================== */
+let lang         = 'id';       // 'id' | 'en'
 let currentCatKey = null;
-let currentDiff = null;
-let level = 0;
-let N = 8;
-let DIRS_ACTIVE = [[0,1],[1,0]];
+let currentDiff   = null;
+let level         = 0;
+let N             = 8;
+let DIRS_ACTIVE   = [[0,1],[1,0]];
 let grid, wordList, foundSet, score = 0, cells, startCell = null, selPath = [];
 
 /* ==================== UTILS ==================== */
 const $ = id => document.getElementById(id);
+const T = key => I18N[lang][key];   // translation helper
+
+const langView  = $('langView');
 const menuView  = $('menuView');
 const levelView = $('levelView');
 const gameView  = $('gameView');
 
 /* ==================== SOUND ==================== */
 let ac;
-function tone(f, d = .12, type = 'sine', at = 0, v = .15) {
+function tone(f, d=.12, type='sine', at=0, v=.15) {
   try {
     ac = ac || new (window.AudioContext || window.webkitAudioContext)();
-    const o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime + at;
-    o.type = type; o.frequency.value = f;
-    g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.001, t + d);
-    o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + d);
-  } catch (e) {}
+    const o=ac.createOscillator(), g=ac.createGain(), t=ac.currentTime+at;
+    o.type=type; o.frequency.value=f;
+    g.gain.setValueAtTime(v,t); g.gain.exponentialRampToValueAtTime(.001,t+d);
+    o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+d);
+  } catch(e){}
 }
-const buzz = p => navigator.vibrate && navigator.vibrate(p);
-const sfxClick  = () => tone(600, .06, 'sine', 0, .14);
-const sfxSelect = () => tone(400, .06, 'sine', 0, .1);
-const sfxFound  = () => [523, 659, 784, 1047].forEach((f, i) => tone(f, .18, 'triangle', i * .09));
-const sfxFail   = () => { tone(150, .22, 'sawtooth', 0, .1); buzz(80); };
-const sfxWin    = () => [523, 659, 784, 659, 784, 1047, 1319].forEach((f, i) => tone(f, .22, 'square', i * .11, .08));
+const buzz       = p => navigator.vibrate && navigator.vibrate(p);
+const sfxClick   = () => tone(600,.06,'sine',0,.14);
+const sfxSelect  = () => tone(400,.06,'sine',0,.1);
+const sfxFound   = () => [523,659,784,1047].forEach((f,i)=>tone(f,.18,'triangle',i*.09));
+const sfxFail    = () => { tone(150,.22,'sawtooth',0,.1); buzz(80); };
+const sfxWin     = () => [523,659,784,659,784,1047,1319].forEach((f,i)=>tone(f,.22,'square',i*.11,.08));
 
 /* ==================== NAVIGATION ==================== */
-function showMenu() {
-  menuView.style.display  = 'flex';
+function goToLangSelect() {
+  sfxClick();
+  langView.style.display  = 'flex';
+  menuView.style.display  = 'none';
   levelView.style.display = 'none';
   gameView.style.display  = 'none';
   $('ov').style.display   = 'none';
   document.body.style.background = 'linear-gradient(160deg,#3a1c71,#d76d77,#ffaf7b)';
 }
 
+function setLang(l) {
+  sfxClick();
+  lang = l;
+  showMenu();
+}
+
+function showMenu() {
+  langView.style.display  = 'none';
+  menuView.style.display  = 'flex';
+  levelView.style.display = 'none';
+  gameView.style.display  = 'none';
+  $('ov').style.display   = 'none';
+  document.body.style.background = 'linear-gradient(160deg,#3a1c71,#d76d77,#ffaf7b)';
+  applyI18nMenu();
+  renderMenu();
+}
+
+function applyI18nMenu() {
+  $('menuTitle').textContent  = T('appTitle');
+  $('menuSub').textContent    = T('menuSub');
+  $('btnChangeLang').textContent = T('langBtn');
+}
+
 function showLevelSelect(key) {
   sfxClick();
   currentCatKey = key;
   const cat = CATEGORIES[key];
-  $('lvCatTitle').textContent = cat.icon + ' ' + cat.name;
+  $('lvCatTitle').textContent = cat.icon + ' ' + cat.name[lang];
+  $('lvPickText').textContent = T('pickDiff');
+  $('btnBackToMenuLabel').textContent = T('back');
+  renderLevelCards();
   document.body.style.background = cat.theme;
+  langView.style.display  = 'none';
   menuView.style.display  = 'none';
   levelView.style.display = 'flex';
   gameView.style.display  = 'none';
@@ -290,64 +417,86 @@ function startGame(diffKey) {
   level = 0;
   score = 0;
   $('sc').textContent = '0';
+  $('btnBackLabel').textContent = T('menuLabel');
+  $('scoreLabel').innerHTML = T('scoreLabel') + ' <b id="sc">0</b>';
+  $('goBtn').textContent        = T('nextBtn');
+  $('changeDiffBtn').textContent = T('changeDiff');
+  $('menuBtn2').textContent     = T('menuBtn');
   levelView.style.display = 'none';
   gameView.style.display  = 'flex';
-  // Update difficulty badge
-  const diff = DIFFICULTIES[diffKey];
+
+  const diffs = DIFFICULTIES(lang);
+  const diff  = diffs[diffKey];
   const badge = $('diff-badge');
-  badge.textContent   = diff.emoji + ' ' + diff.label;
-  badge.className     = 'diff-badge ' + diff.badge;
-  badge.id            = 'diff-badge'; // preserve id
+  badge.textContent = diff.emoji + ' ' + diff.label;
+  badge.className   = 'diff-badge ' + diff.badge;
+  badge.id          = 'diff-badge';
+
   buildLevel();
-  try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); } catch (e) {}
+  try { ac = ac||new (window.AudioContext||window.webkitAudioContext)(); ac.resume(); } catch(e){}
 }
 
-$('btnBack').onclick       = () => { sfxClick(); gameView.style.display = 'none'; $('ov').style.display = 'none'; showLevelSelect(currentCatKey); };
+$('btnBack').onclick       = () => { sfxClick(); gameView.style.display='none'; $('ov').style.display='none'; showLevelSelect(currentCatKey); };
 $('btnBackToMenu').onclick = () => { sfxClick(); showMenu(); };
 $('menuBtn2').onclick      = showMenu;
-$('changeDiffBtn').onclick = () => { sfxClick(); $('ov').style.display = 'none'; gameView.style.display = 'none'; showLevelSelect(currentCatKey); };
+$('changeDiffBtn').onclick = () => { sfxClick(); $('ov').style.display='none'; gameView.style.display='none'; showLevelSelect(currentCatKey); };
 
-/* ==================== RENDER MENU ==================== */
+/* ==================== RENDER ==================== */
 function renderMenu() {
   $('catGrid').innerHTML = Object.entries(CATEGORIES).map(([key, cat]) => `
     <div class="cat-card" onclick="showLevelSelect('${key}')">
       <div class="cat-icon">${cat.icon}</div>
-      <div class="cat-name">${cat.name}</div>
-      <div class="cat-count">${cat.words.length} kata</div>
+      <div class="cat-name">${cat.name[lang]}</div>
+      <div class="cat-count">${cat.words[lang].length} ${T('wordsCount')}</div>
+    </div>
+  `).join('');
+}
+
+function renderLevelCards() {
+  const diffs = DIFFICULTIES(lang);
+  const descs = { easy: T('descEasy'), medium: T('descMedium'), hard: T('descHard') };
+  const stars = { easy: '⭐', medium: '⭐⭐', hard: '⭐⭐⭐' };
+  $('lvList').innerHTML = Object.entries(diffs).map(([key, d]) => `
+    <div class="lv-card ${d.badge}" onclick="startGame('${key}')">
+      <div class="lv-badge">${d.emoji}</div>
+      <div class="lv-info">
+        <div class="lv-name">${d.label}</div>
+        <div class="lv-desc">${descs[key].replace('\n','<br>')}</div>
+        <div class="lv-star">${stars[key]}</div>
+      </div>
     </div>
   `).join('');
 }
 
 /* ==================== GRID BUILDER ==================== */
 function buildLevel() {
-  const cat  = CATEGORIES[currentCatKey];
-  const diff = DIFFICULTIES[currentDiff];
+  const cat   = CATEGORIES[currentCatKey];
+  const diffs = DIFFICULTIES(lang);
+  const diff  = diffs[currentDiff];
   N           = diff.N;
   DIRS_ACTIVE = diff.dirs;
 
-  // Filter kata sesuai panjang maksimum difficulty
-  const eligible = cat.words.filter(w => w.replace(/\s/g,'').length <= diff.maxLen);
-  const shuffled  = [...eligible].sort(() => Math.random() - .5);
+  const wordPool = cat.words[lang];
+  const eligible = wordPool.filter(w => w.replace(/\s/g,'').length <= diff.maxLen);
+  const shuffled = [...eligible].sort(() => Math.random() - .5);
 
-  grid = Array.from({ length: N }, () => Array(N).fill(''));
+  grid = Array.from({length:N}, () => Array(N).fill(''));
 
   const placed = [];
   for (const word of shuffled) {
     if (placed.length >= diff.wordCount) break;
-    const clean = word.replace(/\s/g, '');
-    if (clean.length > N) continue; // panjang kata tidak melebihi sisi grid
-    if (tryPlace(clean)) {
-      placed.push({ display: word, clean });
-    }
+    const clean = word.replace(/\s/g,'');
+    if (clean.length > N) continue;
+    if (tryPlace(clean)) placed.push({ display: word, clean });
   }
 
-  // Fallback: jika tidak cukup kata, relaksasi panjang sedikit
+  // Fallback: relaksasi maxLen → semua kata yang ≤ N
   if (placed.length < 2) {
-    const fallback = cat.words.filter(w => w.replace(/\s/g,'').length <= N)
+    const fallback = wordPool.filter(w => w.replace(/\s/g,'').length <= N)
       .sort(() => Math.random() - .5);
     for (const word of fallback) {
       if (placed.length >= diff.wordCount) break;
-      const clean = word.replace(/\s/g, '');
+      const clean = word.replace(/\s/g,'');
       if (placed.some(p => p.clean === clean)) continue;
       if (tryPlace(clean)) placed.push({ display: word, clean });
     }
@@ -356,45 +505,37 @@ function buildLevel() {
   wordList = placed;
   foundSet = new Set();
 
-  // Isi sel kosong dengan huruf acak
   const FILLER = 'ABCDEFGHIJKLMNOPRSTUW';
-  for (let r = 0; r < N; r++)
-    for (let c = 0; c < N; c++)
-      if (!grid[r][c]) grid[r][c] = FILLER[Math.random() * FILLER.length | 0];
+  for (let r=0;r<N;r++)
+    for (let c=0;c<N;c++)
+      if (!grid[r][c]) grid[r][c] = FILLER[Math.random()*FILLER.length|0];
 
-  // --- Render board ---
-  const diff2 = DIFFICULTIES[currentDiff];
-  $('lv').textContent = 'Level ' + (level + 1) + ' · ' + CATEGORIES[currentCatKey].name;
+  // HUD label
+  $('lv').textContent = T('levelLabel') + ' ' + (level+1) + ' · ' + cat.name[lang];
 
+  // Board
   const boardEl = $('board');
   boardEl.innerHTML = '';
   boardEl.style.gridTemplateColumns = `repeat(${N},1fr)`;
-
-  // Ukuran cell adaptif berdasarkan N
-  const boardSize = Math.min(window.innerWidth * 0.96, window.innerHeight * 0.52, 520);
-  const cellSize  = Math.floor(boardSize / N) - 3;
-  boardEl.style.width  = (cellSize * N + 3 * (N - 1)) + 'px';
-  boardEl.style.gap    = '3px';
-
-  const fontSize = Math.max(10, Math.min(Math.floor(cellSize * 0.5), 24));
+  const boardSize = Math.min(window.innerWidth*.96, window.innerHeight*.52, 520);
+  const cellSize  = Math.floor(boardSize/N) - 3;
+  boardEl.style.width = (cellSize*N + 3*(N-1)) + 'px';
+  boardEl.style.gap   = '3px';
+  const fontSize = Math.max(10, Math.min(Math.floor(cellSize*.5), 24));
 
   cells = [];
-  for (let r = 0; r < N; r++) {
-    for (let c = 0; c < N; c++) {
+  for (let r=0;r<N;r++) {
+    for (let c=0;c<N;c++) {
       const d = document.createElement('div');
-      d.className   = 'c';
+      d.className = 'c';
       d.textContent = grid[r][c];
-      d.dataset.r   = r;
-      d.dataset.c   = c;
-      d.style.width  = cellSize + 'px';
-      d.style.height = cellSize + 'px';
-      d.style.fontSize = fontSize + 'px';
+      d.dataset.r = r; d.dataset.c = c;
+      d.style.cssText = `width:${cellSize}px;height:${cellSize}px;font-size:${fontSize}px`;
       boardEl.appendChild(d);
       cells.push(d);
     }
   }
 
-  // --- Render word list ---
   $('list').innerHTML = wordList.map(item =>
     `<span class="w" id="wc-${item.clean}">${item.display}</span>`
   ).join('');
@@ -402,87 +543,71 @@ function buildLevel() {
   if (wordList.length === 0) setTimeout(buildLevel, 100);
 }
 
-/* --- Penempatan kata (mendukung semua arah dari DIRS_ACTIVE) --- */
 function tryPlace(word) {
-  for (let attempt = 0; attempt < 400; attempt++) {
-    const [dr, dc] = DIRS_ACTIVE[Math.random() * DIRS_ACTIVE.length | 0];
-    const r  = Math.random() * N | 0;
-    const c  = Math.random() * N | 0;
-    const er = r + dr * (word.length - 1);
-    const ec = c + dc * (word.length - 1);
-    if (er < 0 || er >= N || ec < 0 || ec >= N) continue;
-    let ok = true;
-    for (let i = 0; i < word.length; i++) {
-      const ex = grid[r + dr * i][c + dc * i];
-      if (ex && ex !== word[i]) { ok = false; break; }
+  for (let attempt=0; attempt<400; attempt++) {
+    const [dr,dc] = DIRS_ACTIVE[Math.random()*DIRS_ACTIVE.length|0];
+    const r=Math.random()*N|0, c=Math.random()*N|0;
+    const er=r+dr*(word.length-1), ec=c+dc*(word.length-1);
+    if (er<0||er>=N||ec<0||ec>=N) continue;
+    let ok=true;
+    for (let i=0;i<word.length;i++) {
+      const ex=grid[r+dr*i][c+dc*i];
+      if (ex && ex!==word[i]) { ok=false; break; }
     }
     if (!ok) continue;
-    for (let i = 0; i < word.length; i++) grid[r + dr * i][c + dc * i] = word[i];
+    for (let i=0;i<word.length;i++) grid[r+dr*i][c+dc*i]=word[i];
     return true;
   }
   return false;
 }
 
 /* ==================== INPUT ==================== */
-const cellAt = (x, y) => {
-  const e = document.elementFromPoint(x, y);
-  return e && e.dataset && e.dataset.r !== undefined ? e : null;
+const cellAt = (x,y) => {
+  const e=document.elementFromPoint(x,y);
+  return e&&e.dataset&&e.dataset.r!==undefined?e:null;
 };
 
-/**
- * Hitung path dari sel A ke B.
- * Untuk mode mudah/sedang: hanya mendatar (dc==0) atau menurun (dr==0).
- * Untuk mode sulit: tambah diagonal (|dr|==|dc|).
- */
-function calcPath(a, b) {
-  const dr = b.r - a.r, dc = b.c - a.c;
-  const isDiagAllowed = DIRS_ACTIVE.length > 2; // sulit punya diagonal
-  const isValid = (dr === 0 || dc === 0) || (isDiagAllowed && Math.abs(dr) === Math.abs(dc));
-  if (!isValid) return null;
-  const n  = Math.max(Math.abs(dr), Math.abs(dc));
-  const sr = Math.sign(dr), sc = Math.sign(dc);
-  const p  = [];
-  for (let i = 0; i <= n; i++) p.push([a.r + sr * i, a.c + sc * i]);
+function calcPath(a,b) {
+  const dr=b.r-a.r, dc=b.c-a.c;
+  const diagOk = DIRS_ACTIVE.length > 2;
+  const valid = (dr===0||dc===0)||(diagOk&&Math.abs(dr)===Math.abs(dc));
+  if (!valid) return null;
+  const n=Math.max(Math.abs(dr),Math.abs(dc));
+  const sr=Math.sign(dr), sc=Math.sign(dc);
+  const p=[];
+  for (let i=0;i<=n;i++) p.push([a.r+sr*i,a.c+sc*i]);
   return p;
 }
 
 function paintSel() {
-  cells.forEach(c => c.classList.remove('sel'));
-  selPath.forEach(([r, c]) => cells[r * N + c].classList.add('sel'));
+  cells.forEach(c=>c.classList.remove('sel'));
+  selPath.forEach(([r,c])=>cells[r*N+c].classList.add('sel'));
 }
 
 const boardEl = $('board');
-boardEl.addEventListener('pointerdown', e => {
-  const el = cellAt(e.clientX, e.clientY); if (!el) return;
+boardEl.addEventListener('pointerdown', e=>{
+  const el=cellAt(e.clientX,e.clientY); if(!el) return;
   boardEl.setPointerCapture(e.pointerId);
-  startCell = { r: +el.dataset.r, c: +el.dataset.c };
-  selPath   = [[startCell.r, startCell.c]];
+  startCell={r:+el.dataset.r,c:+el.dataset.c};
+  selPath=[[startCell.r,startCell.c]];
   paintSel(); sfxSelect();
 });
-
-boardEl.addEventListener('pointermove', e => {
-  if (!startCell) return;
-  const el = cellAt(e.clientX, e.clientY); if (!el) return;
-  const p = calcPath(startCell, { r: +el.dataset.r, c: +el.dataset.c });
-  if (p && p.length !== selPath.length) {
-    selPath = p; paintSel();
-    tone(380 + p.length * 55, .05, 'sine', 0, .07);
-  } else if (p) selPath = p;
+boardEl.addEventListener('pointermove', e=>{
+  if(!startCell) return;
+  const el=cellAt(e.clientX,e.clientY); if(!el) return;
+  const p=calcPath(startCell,{r:+el.dataset.r,c:+el.dataset.c});
+  if(p&&p.length!==selPath.length){selPath=p;paintSel();tone(380+p.length*55,.05,'sine',0,.07);}
+  else if(p) selPath=p;
 });
-
-boardEl.addEventListener('pointerup', () => {
-  if (!startCell) return;
-  const typed = selPath.map(([r, c]) => grid[r][c]).join('');
-  const rev   = [...typed].reverse().join('');
-  const hit   = wordList.find(item => !foundSet.has(item.clean) && (item.clean === typed || item.clean === rev));
-  const cur   = selPath.slice(); startCell = null; selPath = []; paintSel();
-  if (hit) markFound(hit, cur);
-  else if (cur.length > 1) {
-    cur.forEach(([r, c]) => {
-      const el = cells[r * N + c];
-      el.classList.add('shake');
-      setTimeout(() => el.classList.remove('shake'), 320);
-    });
+boardEl.addEventListener('pointerup', ()=>{
+  if(!startCell) return;
+  const typed=selPath.map(([r,c])=>grid[r][c]).join('');
+  const rev=[...typed].reverse().join('');
+  const hit=wordList.find(item=>!foundSet.has(item.clean)&&(item.clean===typed||item.clean===rev));
+  const cur=selPath.slice(); startCell=null; selPath=[]; paintSel();
+  if(hit) markFound(hit,cur);
+  else if(cur.length>1){
+    cur.forEach(([r,c])=>{const el=cells[r*N+c];el.classList.add('shake');setTimeout(()=>el.classList.remove('shake'),320)});
     sfxFail();
   }
 });
@@ -490,70 +615,67 @@ boardEl.addEventListener('pointerup', () => {
 /* ==================== MARK FOUND ==================== */
 function markFound(item, path) {
   foundSet.add(item.clean);
-  const hue = foundSet.size * 57 % 360;
-  path.forEach(([r, c], i) => {
-    const el = cells[r * N + c];
+  const hue=foundSet.size*57%360;
+  path.forEach(([r,c],i)=>{
+    const el=cells[r*N+c];
     el.classList.remove('found'); void el.offsetWidth;
-    el.style.background    = `hsl(${hue},70%,42%)`;
-    el.style.animationDelay = i * 50 + 'ms';
+    el.style.background=`hsl(${hue},70%,42%)`;
+    el.style.animationDelay=i*50+'ms';
     el.classList.add('found');
   });
-  const chip = $('wc-' + item.clean);
-  if (chip) chip.classList.add('done', 'bump');
-  score += item.clean.length * 10;
-  $('sc').textContent = score;
-  sfxFound(); buzz([30, 40, 30]);
-  const mid = path[path.length >> 1];
-  const rc  = cells[mid[0] * N + mid[1]].getBoundingClientRect();
-  confetti(rc.left + rc.width / 2, rc.top + rc.height / 2, 50);
-  if (foundSet.size === wordList.length) setTimeout(showWin, 900);
+  const chip=$('wc-'+item.clean);
+  if(chip) chip.classList.add('done','bump');
+  score+=item.clean.length*10;
+  $('sc').textContent=score;
+  sfxFound(); buzz([30,40,30]);
+  const mid=path[path.length>>1];
+  const rc=cells[mid[0]*N+mid[1]].getBoundingClientRect();
+  confetti(rc.left+rc.width/2,rc.top+rc.height/2,50);
+  if(foundSet.size===wordList.length) setTimeout(showWin,900);
 }
 
 /* ==================== WIN ==================== */
 function showWin() {
-  score += 50; $('sc').textContent = score; sfxWin(); buzz([100, 50, 100, 50, 200]);
-  confetti(innerWidth / 2, innerHeight / 3, 200);
-  const bestKey = 'carikata_best_' + currentCatKey + '_' + currentDiff;
-  const best    = Math.max(score, +localStorage.getItem(bestKey) || 0);
-  localStorage.setItem(bestKey, best);
-  const diff    = DIFFICULTIES[currentDiff];
-  $('ot').textContent = 'Level ' + (level + 1) + ' Selesai! 🎉';
-  $('oi').innerHTML   = diff.emoji + ' ' + diff.label +
-    '<br>Skor: <b>' + score + '</b> &nbsp;·&nbsp; Terbaik: <b>' + best + '</b>';
-  $('ov').style.display = 'flex';
+  score+=50; $('sc').textContent=score; sfxWin(); buzz([100,50,100,50,200]);
+  confetti(innerWidth/2,innerHeight/3,200);
+  const bestKey='carikata_best_'+lang+'_'+currentCatKey+'_'+currentDiff;
+  const best=Math.max(score,+localStorage.getItem(bestKey)||0);
+  localStorage.setItem(bestKey,best);
+  const diffs=DIFFICULTIES(lang);
+  const diff=diffs[currentDiff];
+  $('ot').textContent = T('levelLabel')+' '+(level+1)+' '+T('levelDone')+' 🎉';
+  $('oi').innerHTML   = diff.emoji+' '+diff.label+
+    '<br>'+T('scoreLabel')+' <b>'+score+'</b> &nbsp;·&nbsp; '+T('bestLabel')+': <b>'+best+'</b>';
+  $('ov').style.display='flex';
 }
 
 $('goBtn').onclick = () => {
-  $('ov').style.display = 'none';
-  level++;
-  buildLevel();
-  try { ac.resume(); } catch (e) {}
+  $('ov').style.display='none'; level++; buildLevel();
+  try{ac.resume();}catch(e){}
 };
 
 /* ==================== CONFETTI ==================== */
-const cv = $('fx'), cx = cv.getContext('2d');
-let ps = [], running = false;
-function resizeCv() { cv.width = innerWidth; cv.height = innerHeight; }
-resizeCv(); addEventListener('resize', resizeCv);
-
-function confetti(x, y, n) {
-  for (let i = 0; i < n; i++)
-    ps.push({ x, y, vx: (Math.random() - .5) * 13, vy: -Math.random() * 13 - 3, s: 4 + Math.random() * 6, h: Math.random() * 360, l: 70 });
-  if (!running) { running = true; requestAnimationFrame(tickConfetti); }
+const cv=$('fx'), cx=cv.getContext('2d');
+let ps=[], running=false;
+function resizeCv(){cv.width=innerWidth;cv.height=innerHeight;}
+resizeCv(); addEventListener('resize',resizeCv);
+function confetti(x,y,n){
+  for(let i=0;i<n;i++)
+    ps.push({x,y,vx:(Math.random()-.5)*13,vy:-Math.random()*13-3,s:4+Math.random()*6,h:Math.random()*360,l:70});
+  if(!running){running=true;requestAnimationFrame(tick);}
 }
-
-function tickConfetti() {
-  cx.clearRect(0, 0, cv.width, cv.height);
-  ps.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += .35; p.l--; cx.fillStyle = `hsl(${p.h},90%,60%)`; cx.fillRect(p.x, p.y, p.s, p.s); });
-  ps = ps.filter(p => p.l > 0 && p.y < cv.height);
-  if (ps.length) requestAnimationFrame(tickConfetti);
-  else { running = false; cx.clearRect(0, 0, cv.width, cv.height); }
+function tick(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;p.l--;cx.fillStyle=`hsl(${p.h},90%,60%)`;cx.fillRect(p.x,p.y,p.s,p.s);});
+  ps=ps.filter(p=>p.l>0&&p.y<cv.height);
+  if(ps.length)requestAnimationFrame(tick);
+  else{running=false;cx.clearRect(0,0,cv.width,cv.height);}
 }
 
 /* ==================== INIT ==================== */
-renderMenu();
-showMenu();
+// Tampilkan layar pilih bahasa di awal
+langView.style.display='flex';
 </script>
-<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');</script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');</script>
 </body>
 </html>
